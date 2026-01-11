@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClubConnect - The future of student organizations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            color: #e6edf3;
+            background-color: #0d1117;
+            overflow-x: hidden;
+        }
+        
+        /* Premium Animation Variables */
+        :root {
+            --animation-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --animation-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --animation-spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        /* Ambient Background Animation */
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.08;
+        }
+        
+        .ambient-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(88, 166, 255, 0.4) 0%, transparent 70%);
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .ambient-shape:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            top: -10%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+        
+        .ambient-shape:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            top: 40%;
+            right: -5%;
+            animation-delay: -7s;
+        }
+        
+        .ambient-shape:nth-child(3) {
+            width: 500px;
+            height: 500px;
+            bottom: -15%;
+            left: 30%;
+            animation-delay: -14s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -30px) scale(1.05);
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.95);
+            }
+        }
+        
+        /* Hero Load Animation */
+        .hero-title {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s var(--animation-spring) forwards;
+        }
+        
+        .hero-lead {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s var(--animation-spring) 0.2s forwards;
+        }
+        
+        .hero-actions {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s var(--animation-spring) 0.4s forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Scroll Reveal Animation - MORE VISIBLE */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s var(--animation-spring), transform 0.8s var(--animation-spring);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .stagger-children > * {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s var(--animation-spring), transform 0.6s var(--animation-spring);
+        }
+        
+        .stagger-children.active > *:nth-child(1) { transition-delay: 0ms; }
+        .stagger-children.active > *:nth-child(2) { transition-delay: 150ms; }
+        .stagger-children.active > *:nth-child(3) { transition-delay: 300ms; }
+        .stagger-children.active > *:nth-child(4) { transition-delay: 450ms; }
+        
+        .stagger-children.active > * {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #30363d;
+            padding: 16px 0;
+            z-index: 1000;
+            transition: all 0.3s var(--animation-smooth);
+        }
+        
+        .navbar .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 32px;
+        }
+        
+        .navbar .logo {
+            font-size: 20px;
+            font-weight: 600;
+            color: #e6edf3;
+            text-decoration: none;
+            transition: transform 0.2s var(--animation-smooth);
+        }
+        
+        .navbar .logo:hover {
+            transform: scale(1.02);
+        }
+        
+        .navbar nav {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        
+        .navbar nav a {
+            color: #e6edf3;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.2s var(--animation-smooth);
+        }
+        
+        /* Micro-interaction: Nav underline */
+        .navbar nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #58a6ff;
+            transition: width 0.3s var(--animation-spring);
+        }
+        
+        .navbar nav a:hover {
+            color: #58a6ff;
+        }
+        
+        .navbar nav a:hover::after {
+            width: 100%;
+        }
+        
+        .navbar .btn-nav {
+            background: transparent;
+            color: #e6edf3;
+            padding: 5px 16px;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s var(--animation-smooth);
+        }
+        
+        .navbar .btn-nav:hover {
+            background-color: #30363d;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .navbar .btn-nav:active {
+            transform: translateY(0);
+        }
+        
+        .hero {
+            padding: 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Parallax Background Elements */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1000px;
+            height: 1000px;
+            background: radial-gradient(circle, rgba(136, 102, 255, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            transition: transform 0.3s ease-out;
+            will-change: transform;
+        }
+        
+        .parallax-layer {
+            position: absolute;
+            pointer-events: none;
+            transition: transform 0.3s ease-out;
+            will-change: transform;
+        }
+            background: radial-gradient(circle, rgba(136, 102, 255, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .hero .containvw;
+            height: 100vh;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .spline-container {
+            width: 100vw;
+            height: 100vh;
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .spline-container spline-viewer {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: scale(2.6);
+            transform-origin: center center;
+        }
+        
+        .hero h1 {
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 80px;
+            font-weight: 500;
+            line-height: 1;
+            margin-bottom: 24px;
+            color: #e6edf3;
+            letter-spacing: -0.02em;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            color: #7d8590;
+            margin-bottom: 32px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Magnetic Button Effect - MORE VISIBLE */
+        .btn-primary {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(180deg, #8b5cf6, #7c3aed);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s var(--animation-spring);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            position: relative;
+            will-change: transform;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(139, 92, 246, 0.5), 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(-2px) scale(0.95);
+            transition-duration: 0.1s;
+        }
+        
+        .btn-secondary {
+            display: inline-block;
+            padding: 12px 24px;
+            background: transparent;
+            color: #e6edf3;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            border: 1px solid #30363d;
+            cursor: pointer;
+            transition: all 0.3s var(--animation-spring);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #30363d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-secondary:active {
+            transform: translateY(0);
+        }
+        
+        .section {
+            padding: 128px 32px;
+        }
+        
+        .section .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        
+        .section h2 {
+            font-size: 48px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: #e6edf3;
+            letter-spacing: -0.02em;
+        }
+        
+        .section-subtitle {
+            font-size: 20px;
+            color: #7d8590;
+            margin-bottom: 64px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+        
+        /* Card Hover Depth Effect - MORE DRAMATIC */
+        .feature-item {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 32px;
+            transition: all 0.5s var(--animation-spring);
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+        
+        .feature-item:hover {
+            border-color: #8b5cf6;
+            box-shadow: 
+                0 0 30px rgba(139, 92, 246, 0.3),
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 10px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-10px) scale(1.02) translateZ(30px);
+        }
+        
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(180deg, #8b5cf6, #7c3aed);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+            transition: transform 0.4s var(--animation-spring);
+        }
+        
+        .feature-item:hover .feature-icon {
+            transform: scale(1.2) rotate(10deg);
+        }
+        
+        .feature-item h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #e6edf3;
+        }
+        
+        .feature-item p {
+            color: #7d8590;
+            line-height: 1.6;
+        }
+        
+        .workflow-section {
+            background: #0d1117;
+            position: relative;
+        }
+        
+        .workflow-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: center;
+        }
+        
+        .workflow-visual {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            font-size: 80px;
+        }
+        
+        .security-section {
+            background: linear-gradient(180deg, #0d1117 0%, #161b22 100%);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 48px;
+            text-align: center;
+        }
+        
+        .stat-item h3 {
+            font-size: 48px;
+            font-weight: 600;
+            color: #8b5cf6;
+            margin-bottom: 8px;
+        }
+        
+        .stat-item p {
+            font-size: 18px;
+            color: #7d8590;
+        }
+        
+        .testimonials-section {
+            background: #161b22;
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        
+        .testimonial-card {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.5s var(--animation-spring);
+            transform-style: preserve-3d;
+        }
+        
+        .testimonial-card:hover {
+            border-color: #58a6ff;
+            box-shadow: 
+                0 0 25px rgba(88, 166, 255, 0.2),
+                0 15px 30px rgba(0, 0, 0, 0.4);
+            transform: translateY(-8px) scale(1.02) translateZ(15px);
+        }
+        
+        .testimonial-card p {
+            color: #e6edf3;
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(180deg, #8b5cf6, #7c3aed);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .author-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e6edf3;
+        }
+        
+        .author-info p {
+            font-size: 12px;
+            color: #7d8590;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 128px 32px;
+            background: #0d1117;
+            position: relative;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1200px;
+            height: 1200px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .cta-section h2 {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta-section p {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta-actions {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .footer {
+            background: #0d1117;
+            border-top: 1px solid #30363d;
+            padding: 64px 32px;
+        }
+        
+        .footer .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            gap: 48px;
+        }
+        
+        .footer-column h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e6edf3;
+            margin-bottom: 16px;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column li {
+            margin-bottom: 8px;
+        }
+        
+        .footer-column a {
+            color: #7d8590;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        
+        .footer-column a:hover {
+            color: #e6edf3;
+        }
+        
+        .footer-logo {
+            font-size: 20px;
+            font-weight: 600;
+            color: #e6edf3;
+            margin-bottom: 12px;
+        }
+        
+        .footer-desc {
+            color: #7d8590;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .footer-desc {
+            color: #7d8590;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 48px;
+            }
+            
+            .navbar nav {
+                display: none;
+            }
+            
+            .feature-grid,
+            .workflow-grid,
+            .stats-grid,
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer .container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        /* Pulsing glow effect on buttons */
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(139, 92, 246, 0.8);
+            }
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 6px;
+            background: linear-gradient(45deg, #8b5cf6, #7c3aed, #8b5cf6);
+            background-size: 200% 200%;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+            animation: gradient-shift 3s ease infinite;
+        }
+        
+        .btn-primary:hover::before {
+            opacity: 0.3;
+        }
+        
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Ambient Background Animation -->
+    <div class="ambient-bg">
+        <div class="ambient-shape"></div>
+        <div class="ambient-shape"></div>
+        <div class="ambient-shape"></div>
+    </div>
+
+    <header class="navbar">
+        <div class="container">
+            <a href="#" class="logo">ClubConnect</a>
+            <nav>
+                <a href="#features">Features</a>
+                <a href="#security">Security</a>
+                <a href="#testimonials">Testimonials</a>
+                <a href="http://localhost:5191/app/login">Sign in</a>
+                <button class="btn-nav" onclick="location.href='http://localhost:5191/app/register'">Sign up</button>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="spline-container" onclick="window.location.href='http://localhost:5191/app/register'" style="cursor: pointer;">
+                <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.28/build/spline-viewer.js"></script>
+                <spline-viewer url="https://prod.spline.design/5fj6DMvW51MWAXmh/scene.splinecode"></spline-viewer>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="section reveal">
+        <div class="container">
+            <h2>ClubConnect features</h2>
+            <p class="section-subtitle">Discover   •   Join   •   Engage   •   Track</p>
+            
+            <div class="feature-grid stagger-children">
+                <div class="feature-item">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Discover</h3>
+                    <p>Browse all available school clubs in one place. Find organizations that match your interests and join with a single click.</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">📅</div>
+                    <h3>Join</h3>
+                    <p>Sign up for clubs instantly. Track upcoming meetings, events, and deadlines directly from your dashboard.</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">💬</div>
+                    <h3>Engage</h3>
+                    <p>Receive real-time announcements and updates from club leaders. Stay connected with your community.</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">📊</div>
+                    <h3>Track</h3>
+                    <p>View your participation history, earned achievements, and attendance records across all your clubs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section workflow-section reveal">
+        <div class="container">
+            <h2>Accelerate your entire student experience</h2>
+            <p class="section-subtitle">From your first club search to final graduation, ClubConnect provides tools to help you discover, join, and manage student organizations.</p>
+            
+            <div class="workflow-grid">
+                <div class="workflow-visual">
+                    🎯
+                </div>
+                <div>
+                    <h3 style="font-size: 24px; margin-bottom: 16px; color: #e6edf3;">Your student hub everywhere. ClubConnect is ready to work with you at each step of your student life.</h3>
+                    <a href="#features" style="color: #8b5cf6; text-decoration: none; font-weight: 600;">Explore ClubConnect →</a>
+                    <p style="margin-top: 24px; color: #7d8590; font-style: italic;">"ClubConnect helps us onboard new students and get them engaged right away. We have all our clubs, events, and announcements in one place."</p>
+                    <p style="color: #7d8590; font-size: 14px; margin-top: 8px;">- Student Affairs Administrator</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="security" class="section security-section reveal">
+        <div class="container">
+            <h2>Built-in student engagement where found means joined</h2>
+            <p class="section-subtitle">Discover clubs in seconds. Spend less time searching and more time participating.</p>
+            
+            <div class="stats-grid stagger-children">
+                <div class="stat-item">
+                    <h3>10,000+</h3>
+                    <p>Active students</p>
+                </div>
+                
+                <div class="stat-item">
+                    <h3>500+</h3>
+                    <p>School clubs</p>
+                </div>
+                
+                <div class="stat-item">
+                    <h3>50,000+</h3>
+                    <p>Events tracked</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="section testimonials-section reveal">
+        <div class="container">
+            <h2>Work together, achieve more</h2>
+            <p class="section-subtitle">From planning to participation, ClubConnect keeps your student organizations and opportunities next to you.</p>
+            
+            <div class="testimonial-grid stagger-children">
+                <div class="testimonial-card">
+                    <p>"ClubConnect made it so easy to find and join clubs that match my interests. I've never been more involved in school activities!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">S</div>
+                        <div class="author-info">
+                            <h4>Sarah</h4>
+                            <p>Junior</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p>"The event tracking feature is a game-changer. I never miss meetings anymore, and my participation has skyrocketed."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">A</div>
+                        <div class="author-info">
+                            <h4>Alex</h4>
+                            <p>Senior</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p>"As a club leader, ClubConnect helps me communicate with members effectively. It's streamlined everything."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">J</div>
+                        <div class="author-info">
+                            <h4>Jordan</h4>
+                            <p>Club President</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section reveal">
+        <div class="container">
+            <h2>Thousands of students call ClubConnect home</h2>
+            <p>Whether you're exploring new interests or leading organizations, ClubConnect is where you belong.<br>Join the most widely adopted student platform to build the connections that shape what's next.</p>
+            <div class="cta-actions">
+                <a href="http://localhost:5191/app/register" class="btn-primary magnetic-btn">Sign up for ClubConnect</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-column">
+                <div class="footer-logo">ClubConnect</div>
+                <p class="footer-desc">Empowering students to discover, join, and thrive in school clubs.</p>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#security">Security</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Platform</h4>
+                <ul>
+                    <li><a href="http://localhost:5191/app/login">Sign in</a></li>
+                    <li><a href="http://localhost:5191/app/register">Sign up</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Terms</a></li>
+                    <li><a href="#">Security</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // 1. CURSOR-BASED PARALLAX
+        // Subtle background movement following cursor
+        // ============================================
+        let mouseX = 0, mouseY = 0;
+        let currentX = 0, currentY = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) / window.innerWidth;
+            mouseY = (e.clientY - window.innerHeight / 2) / window.innerHeight;
+        });
+        
+        function animateParallax() {
+            // Smooth interpolation for silky movement
+            currentX += (mouseX - currentX) * 0.1;
+            currentY += (mouseY - currentY) * 0.1;
+            
+            const heroGlow = document.querySelector('.hero::before');
+            const ambientShapes = document.querySelectorAll('.ambient-shape');
+            
+            // Move hero glow (subtle 8px max)
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                const glowX = currentX * 8;
+                const glowY = currentY * 8;
+                hero.style.setProperty('--glow-x', `${glowX}px`);
+                hero.style.setProperty('--glow-y', `${glowY}px`);
+            }
+            
+            // Move ambient shapes at different speeds for depth
+            ambientShapes.forEach((shape, index) => {
+                const speed = (index + 1) * 3;
+                const x = currentX * speed;
+                const y = currentY * speed;
+                shape.style.transform = `translate(${x}px, ${y}px)`;
+            });
+            
+            requestAnimationFrame(animateParallax);
+        }
+        
+        animateParallax();
+        
+        // ============================================
+        // 2. MAGNETIC BUTTON EFFECT - ENHANCED
+        // Buttons follow cursor on hover
+        // ============================================
+        const magneticButtons = document.querySelectorAll('.btn-primary, .magnetic-btn');
+        
+        magneticButtons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transition = 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)';
+            });
+            
+            button.addEventListener('mousemove', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                // Max movement 12px for more visible effect
+                const moveX = (x / rect.width) * 12;
+                const moveY = (y / rect.height) * 12;
+                
+                this.style.transform = `translate(${moveX}px, ${moveY}px) translateY(-4px) scale(1.05)`;
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+            });
+        });
+        
+        // ============================================
+        // 3. SCROLL-TRIGGERED REVEALS
+        // Fade in elements as they enter viewport
+        // ============================================
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    // Only trigger once
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        
+        // Observe all reveal elements
+        document.querySelectorAll('.reveal, .stagger-children').forEach(el => {
+            revealObserver.observe(el);
+        });
+        
+        // ============================================
+        // 4. ENHANCED NAV SCROLL
+        // Navbar gets more opaque on scroll
+        // ============================================
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            const scrolled = window.scrollY > 20;
+            
+            if (scrolled) {
+                navbar.style.background = 'rgba(13, 17, 23, 0.95)';
+                navbar.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.3)';
+            } else {
+                navbar.style.background = 'rgba(13, 17, 23, 0.8)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+        
+        // ============================================
+        // 5. SMOOTH SCROLL
+        // Enhanced smooth scrolling
+        // ============================================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 80; // Account for navbar
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // ============================================
+        // 6. PERFORMANCE OPTIMIZATION
+        // Use passive listeners for scroll/mouse events
+        // ============================================
+        let ticking = false;
+        
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    // Scroll-based animations here
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+        
+        // ============================================
+        // WHY EACH ANIMATION:
+        // 
+        // 1. Cursor Parallax: Creates depth and interactivity
+        //    without being distracting. Max 8px keeps it subtle.
+        //
+        // 2. Magnetic Buttons: Premium feel, guides user to CTAs,
+        //    confirms interactivity before click.
+        //
+        // 3. Scroll Reveals: Progressive disclosure, guides
+        //    attention down the page naturally.
+        //
+        // 4. Card Depth: Adds tactile feel, makes UI feel
+        //    responsive and alive.
+        //
+        // 5. Ambient Motion: Creates living background without
+        //    distraction. 20s duration + low opacity.
+        //
+        // 6. Hero Load: Establishes visual hierarchy,
+        //    headline → value prop → action.
+        //
+        // 7. Micro-interactions: Confirms user actions,
+        //    creates tight feedback loop.
+        //
+        // All use spring easing (0.16, 1, 0.3, 1) for
+        // natural, physics-based motion.
+        // ============================================
+    </script>
+</body>
+</html>

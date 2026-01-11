@@ -1,0 +1,225 @@
+.social-feed-page {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.feed-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.feed-header h1 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.feed-header p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.create-post-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.post-author-pic {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7ED957, #6EB5FF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.create-post-form {
+  flex: 1;
+}
+
+.create-post-form textarea {
+  width: 100%;
+  border: 2px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: 1rem;
+  font-family: 'Outfit', sans-serif;
+  resize: none;
+  margin-bottom: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.create-post-form textarea:focus {
+  outline: none;
+  border-color: #7ED957;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post-options {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.option-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: #F3F4F6;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.option-btn:hover {
+  background: #E5E7EB;
+}
+
+.post-btn {
+  padding: 0.75rem 2rem;
+  background: #7ED957;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.post-btn:hover:not(:disabled) {
+  background: #6FC847;
+  transform: translateY(-2px);
+}
+
+.post-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.posts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.post-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-2px);
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.post-author-info {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.post-author-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.05rem;
+}
+
+.post-author-meta {
+  color: #666;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.club-tag {
+  background: linear-gradient(135deg, #7ED957, #6EB5FF);
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.post-content p {
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.post-engagement {
+  border-top: 1px solid #E5E7EB;
+  border-bottom: 1px solid #E5E7EB;
+  padding: 0.75rem 0;
+  margin-bottom: 0.75rem;
+}
+
+.engagement-stats {
+  display: flex;
+  gap: 1.5rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.post-actions-bar {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  background: #F9F9F9;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  background: #7ED957;
+  color: white;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .social-feed-page {
+    padding: 1rem;
+  }
+
+  .post-options {
+    flex-wrap: wrap;
+  }
+
+  .option-btn {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .post-actions-bar {
+    flex-direction: column;
+  }
+}

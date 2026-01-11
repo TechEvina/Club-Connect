@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en" data-color-mode="dark" data-dark-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClubConnect: Where student organizations happen together</title>
+    <style>
+        :root {
+            --color-canvas-default: #0d1117;
+            --color-canvas-subtle: #161b22;
+            --color-border-default: #30363d;
+            --color-border-muted: #21262d;
+            --color-fg-default: #e6edf3;
+            --color-fg-muted: #7d8590;
+            --color-accent-emphasis: #1f6feb;
+            --color-success-emphasis: #238636;
+            --color-attention-emphasis: #9a6700;
+            --color-danger-emphasis: #da3633;
+            --color-done-emphasis: #8957e5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            background: var(--color-canvas-default);
+            color: var(--color-fg-default);
+            font-size: 16px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Header */
+        .header-logged-out {
+            position: sticky;
+            top: 0;
+            z-index: 32;
+            background: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--color-border-default);
+        }
+
+        .header-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-logo {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-fg-default);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-logo svg {
+            width: 32px;
+            height: 32px;
+            fill: currentColor;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            list-style: none;
+        }
+
+        .header-nav a {
+            color: var(--color-fg-default);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .header-nav a:hover {
+            color: var(--color-fg-muted);
+        }
+
+        .header-signup {
+            background: #f6f8fa;
+            color: #24292f;
+            border: 1px solid rgba(31, 35, 40, 0.15);
+            padding: 5px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .header-signup:hover {
+            background: #f3f4f6;
+        }
+
+        /* Hero Section */
+        .position-relative {
+            position: relative;
+        }
+
+        .overflow-hidden {
+            overflow: hidden;
+        }
+
+        .hero-section {
+            padding: 120px 24px 96px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1400px;
+            height: 1400px;
+            background: radial-gradient(ellipse at center, rgba(31, 111, 235, 0.15) 0%, rgba(13, 17, 23, 0) 50%);
+            pointer-events: none;
+        }
+
+        .container-xl {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
+        .hero-title {
+            font-size: 80px;
+            font-weight: 500;
+            line-height: 1;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+            color: var(--color-fg-default);
+        }
+
+        .hero-lead {
+            font-size: 20px;
+            color: var(--color-fg-muted);
+            margin-bottom: 32px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-mktg {
+            padding: 13px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-block;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+        }
+
+        .btn-primary-mktg {
+            background: linear-gradient(180deg, #54d1db, #38bec9);
+            color: #0d1117;
+            box-shadow: 0 0 transparent, 0 0 transparent, 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        }
+
+        .btn-primary-mktg:hover {
+            background: linear-gradient(180deg, #38bec9, #2cb1bc);
+            box-shadow: 0 4px 7px rgba(0, 0, 0, 0.15), 0 100px 80px rgba(255, 255, 255, 0.02), 0 42px 33px rgba(255, 255, 255, 0.024), 0 22px 18px rgba(255, 255, 255, 0.028), 0 12px 10px rgba(255, 255, 255, 0.034), 0 7px 5px rgba(255, 255, 255, 0.04), 0 3px 2px rgba(255, 255, 255, 0.07);
+        }
+
+        /* Sections */
+        .py-spacer {
+            padding-top: 96px;
+            padding-bottom: 96px;
+        }
+
+        .section-heading {
+            font-size: 48px;
+            font-weight: 500;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+
+        .section-subheading {
+            font-size: 20px;
+            color: var(--color-fg-muted);
+            margin-bottom: 48px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .feature-card {
+            background: var(--color-canvas-subtle);
+            border: 1px solid var(--color-border-default);
+            border-radius: 6px;
+            padding: 40px;
+            transition: all 0.2s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--color-accent-emphasis);
+            box-shadow: 0 0 0 1px var(--color-accent-emphasis);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+
+        .feature-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--color-fg-default);
+        }
+
+        .feature-description {
+            color: var(--color-fg-muted);
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        /* Build Section */
+        .build-section {
+            background: var(--color-canvas-subtle);
+            border-top: 1px solid var(--color-border-default);
+            border-bottom: 1px solid var(--color-border-default);
+        }
+
+        .build-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: center;
+        }
+
+        .build-visual {
+            background: var(--color-canvas-default);
+            border: 1px solid var(--color-border-default);
+            border-radius: 6px;
+            padding: 64px;
+            text-align: center;
+            font-size: 120px;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 48px;
+            text-align: center;
+            margin-top: 48px;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 600;
+            color: var(--color-accent-emphasis);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: var(--color-fg-muted);
+        }
+
+        /* Testimonials */
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .testimonial-card {
+            background: var(--color-canvas-default);
+            border: 1px solid var(--color-border-default);
+            border-radius: 6px;
+            padding: 32px;
+        }
+
+        .testimonial-quote {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--color-accent-emphasis);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .author-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .author-title {
+            font-size: 12px;
+            color: var(--color-fg-muted);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 128px 24px;
+            position: relative;
+        }
+
+        .cta-glow {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1400px;
+            height: 1400px;
+            background: radial-gradient(ellipse at center, rgba(31, 111, 235, 0.2) 0%, rgba(13, 17, 23, 0) 50%);
+            pointer-events: none;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--color-canvas-default);
+            border-top: 1px solid var(--color-border-default);
+            padding: 64px 32px 32px;
+        }
+
+        .footer-grid {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            gap: 48px;
+        }
+
+        .footer-heading {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-fg-default);
+            margin-bottom: 16px;
+        }
+
+        .footer-list {
+            list-style: none;
+        }
+
+        .footer-list li {
+            margin-bottom: 8px;
+        }
+
+        .footer-link {
+            color: var(--color-fg-muted);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .footer-link:hover {
+            color: var(--color-accent-emphasis);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 48px;
+            }
+
+            .feature-grid,
+            .build-cols,
+            .stats-grid,
+            .testimonial-grid,
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="logged-out env-production page-responsive">
+        <div class="header-logged-out">
+            <div class="header-container">
+                <a href="/" class="header-logo">
+                    <span>ClubConnect</span>
+                </a>
+                <nav>
+                    <ul class="header-nav">
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#security">Security</a></li>
+                        <li><a href="#testimonials">Testimonials</a></li>
+                        <li><a href="http://localhost:5191/app/login">Sign in</a></li>
+                        <li><a href="http://localhost:5191/app/register" class="header-signup">Sign up</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <div class="position-relative overflow-hidden">
+            <div class="hero-glow"></div>
+            <div class="hero-section">
+                <div class="container-xl position-relative">
+                    <h1 class="hero-title">The future of student clubs<br>happens together</h1>
+                    <p class="hero-lead">Tools and trends evolve, but student connection endures. With ClubConnect, students, clubs, and opportunities come together on one platform.</p>
+                    <div class="hero-actions">
+                        <a href="http://localhost:5191/app/register" class="btn-mktg btn-primary-mktg">Sign up for ClubConnect</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="features" class="py-spacer">
+            <div class="container-xl">
+                <div class="text-center">
+                    <h2 class="section-heading">ClubConnect features</h2>
+                    <p class="section-subheading">Discover • Join • Engage • Track</p>
+                </div>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h3 class="feature-title">Discover</h3>
+                        <p class="feature-description">Browse all available school clubs in one place. Find organizations that match your interests and join with a single click.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">📅</div>
+                        <h3 class="feature-title">Join</h3>
+                        <p class="feature-description">Sign up for clubs instantly. Track upcoming meetings, events, and deadlines directly from your dashboard.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">💬</div>
+                        <h3 class="feature-title">Engage</h3>
+                        <p class="feature-description">Receive real-time announcements and updates from club leaders. Stay connected with your community.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">Track</h3>
+                        <p class="feature-description">View your participation history, earned achievements, and attendance records across all your clubs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="build-section py-spacer">
+            <div class="container-xl">
+                <h2 class="section-heading text-center">Accelerate your entire student experience</h2>
+                <p class="section-subheading text-center">From your first club search to final graduation, ClubConnect provides tools to help you discover, join, and manage student organizations.</p>
+                
+                <div class="build-cols">
+                    <div class="build-visual">
+                        🎯
+                    </div>
+                    <div>
+                        <h3 style="font-size: 24px; margin-bottom: 16px;">Your student hub everywhere. ClubConnect is ready to work with you at each step of your student life.</h3>
+                        <p style="color: var(--color-fg-muted); margin-bottom: 24px;">From planning to participation, ClubConnect keeps your student organizations and opportunities next to you.</p>
+                        <a href="#features" style="color: var(--color-accent-emphasis); text-decoration: none; font-weight: 600;">Explore ClubConnect →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="security" class="py-spacer">
+            <div class="container-xl">
+                <div class="text-center">
+                    <h2 class="section-heading">Built-in student engagement where found means joined</h2>
+                    <p class="section-subheading">Discover clubs in seconds. Spend less time searching and more time participating.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div>
+                        <div class="stat-number">10,000+</div>
+                        <div class="stat-label">Active students</div>
+                    </div>
+                    <div>
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">School clubs</div>
+                    </div>
+                    <div>
+                        <div class="stat-number">50,000+</div>
+                        <div class="stat-label">Events tracked</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="testimonials" class="build-section py-spacer">
+            <div class="container-xl">
+                <div class="text-center">
+                    <h2 class="section-heading">Work together, achieve more</h2>
+                    <p class="section-subheading">From planning to participation, ClubConnect keeps your student organizations and opportunities next to you.</p>
+                </div>
+
+                <div class="testimonial-grid">
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote">"ClubConnect made it so easy to find and join clubs that match my interests. I've never been more involved in school activities!"</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">S</div>
+                            <div>
+                                <div class="author-name">Sarah</div>
+                                <div class="author-title">Junior</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote">"The event tracking feature is a game-changer. I never miss meetings anymore, and my participation has skyrocketed."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">A</div>
+                            <div>
+                                <div class="author-name">Alex</div>
+                                <div class="author-title">Senior</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote">"As a club leader, ClubConnect helps me communicate with members effectively. It's streamlined everything."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">J</div>
+                            <div>
+                                <div class="author-name">Jordan</div>
+                                <div class="author-title">Club President</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="position-relative overflow-hidden">
+            <div class="cta-glow"></div>
+            <div class="cta-section">
+                <div class="container-xl position-relative">
+                    <h2 class="section-heading">Thousands of students call ClubConnect home</h2>
+                    <p class="hero-lead">Whether you're exploring new interests or leading organizations, ClubConnect is where you belong.<br>Join the most widely adopted student platform to build the connections that shape what's next.</p>
+                    <div class="hero-actions">
+                        <a href="http://localhost:5191/app/register" class="btn-mktg btn-primary-mktg">Sign up for ClubConnect</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-heading">ClubConnect</div>
+                    <p style="color: var(--color-fg-muted); font-size: 14px;">Empowering students to discover, join, and thrive in school clubs.</p>
+                </div>
+
+                <div>
+                    <h4 class="footer-heading">Product</h4>
+                    <ul class="footer-list">
+                        <li><a href="#features" class="footer-link">Features</a></li>
+                        <li><a href="#security" class="footer-link">Security</a></li>
+                        <li><a href="#testimonials" class="footer-link">Testimonials</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-heading">Platform</h4>
+                    <ul class="footer-list">
+                        <li><a href="http://localhost:5191/app/login" class="footer-link">Sign in</a></li>
+                        <li><a href="http://localhost:5191/app/register" class="footer-link">Sign up</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-heading">Company</h4>
+                    <ul class="footer-list">
+                        <li><a href="#" class="footer-link">About</a></li>
+                        <li><a href="#" class="footer-link">Blog</a></li>
+                        <li><a href="#" class="footer-link">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-heading">Legal</h4>
+                    <ul class="footer-list">
+                        <li><a href="#" class="footer-link">Privacy</a></li>
+                        <li><a href="#" class="footer-link">Terms</a></li>
+                        <li><a href="#" class="footer-link">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

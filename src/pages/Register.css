@@ -1,0 +1,183 @@
+/* Register.css - Responsive Styles */
+
+.register-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #FFF8F0 0%, #FEFDFB 50%, #F9F9F9 100%);
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.register-card {
+  max-width: 600px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 40px;
+  border: 1px solid rgba(126, 217, 87, 0.1);
+  box-shadow: 0 8px 32px rgba(126, 217, 87, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Input Fields */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"] {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: #FFFFFF;
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus {
+  outline: none;
+  border-color: var(--vibrant-green);
+  box-shadow: 0 0 0 3px rgba(126, 217, 87, 0.1);
+}
+
+/* Buttons */
+.register-card button {
+  transition: all 0.2s;
+}
+
+.register-card button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(110, 181, 255, 0.3);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .register-container {
+    padding: 20px 16px;
+  }
+  
+  .register-card {
+    padding: 24px 20px;
+    border-radius: 12px;
+  }
+  
+  .progress-stepper {
+    margin-bottom: 24px;
+  }
+  
+  /* Make step circles smaller on mobile */
+  .step-circle {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 12px !important;
+  }
+  
+  .step-label {
+    font-size: 10px !important;
+    max-width: 80px !important;
+  }
+  
+  /* Form inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"] {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+  
+  /* Language selection grid */
+  .language-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+  
+  .language-option {
+    padding: 12px !important;
+  }
+  
+  .language-flag {
+    font-size: 24px !important;
+  }
+  
+  /* Role cards */
+  .role-option {
+    padding: 12px !important;
+  }
+  
+  .role-icon {
+    font-size: 20px !important;
+  }
+  
+  /* Buttons */
+  .nav-buttons {
+    flex-direction: column-reverse !important;
+  }
+  
+  .nav-buttons button {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-container {
+    padding: 16px 12px;
+  }
+  
+  .register-card {
+    padding: 20px 16px;
+  }
+  
+  h1 {
+    font-size: 24px !important;
+  }
+  
+  h2 {
+    font-size: 20px !important;
+  }
+  
+  p {
+    font-size: 14px !important;
+  }
+  
+  /* Hide step labels on very small screens */
+  .step-label {
+    display: none !important;
+  }
+  
+  /* Stack language grid */
+  .language-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Touch improvements */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase tap targets for touch devices - minimum 44x44px per Apple/Google guidelines */
+  button, 
+  .clickable,
+  .school-option,
+  .language-option,
+  .role-option,
+  .club-option,
+  input[type="checkbox"],
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Remove hover states on touch devices */
+  *:hover {
+    opacity: 1 !important;
+  }
+  
+  /* Improve touch feedback */
+  button:active,
+  .clickable:active {
+    transform: scale(0.98);
+    transition: transform 0.1s;
+  }
+}
