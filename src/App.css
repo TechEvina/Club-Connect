@@ -518,3 +518,16 @@ a:focus-visible {
     position: relative;
   }
 }
+
+/* Accessibility helper classes applied to <html> by AccessibilityChatbot */
+.a11y-high-contrast {
+  --bg-primary: #000 !important;
+  --bg-secondary: #111 !important;
+  --text-primary: #FFF !important;
+  --text-secondary: #DDD !important;
+  background-color: #000 !important;
+  color: #fff !important;
+}
+.a11y-large-text { font-size: 115%; }
+.a11y-dyslexic { font-family: 'OpenDyslexic', 'Arial', sans-serif !important; }
+.a11y-focus-outline *:focus { outline: 3px dashed #FFD166 !important; outline-offset: 3px !important; }

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { generateEventQRCode, markAttendance } from '../services/qrCodeService';
+import React, { useState, useEffect, useRef } from 'react';
+import { generateEventQRCode, markAttendance, validateQRCode } from '../services/qrCodeService';
 import { useAuth } from '../context/AuthContext';
 import './QRAttendance.css';
 
@@ -10,6 +10,10 @@ const QRAttendance = () => {
   const [selectedEvent, setSelectedEvent] = useState('');
   const [scanResult, setScanResult] = useState(null);
   const [scanning, setScanning] = useState(false);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const detectorRef = useRef(null);
+  const scanIntervalRef = useRef(null);
 
   const events = [
     { id: 'evt1', name: 'Robotics Workshop', clubId: 'robotics', date: 'Today, 3:00 PM' },
@@ -26,25 +30,95 @@ const QRAttendance = () => {
   };
 
   const handleScanQR = () => {
+    setScanResult(null);
     setScanning(true);
-    
-    // Simulate QR scan (in production, use a real QR scanner library)
-    setTimeout(() => {
-      const mockScanData = JSON.stringify({
-        eventId: 'evt1',
-        clubId: 'robotics',
-        timestamp: Date.now(),
-        expires: Date.now() + (15 * 60 * 1000)
-      });
-      
-      const attendance = markAttendance(user.id, 'evt1', 'robotics');
-      setScanResult({
-        success: true,
-        message: 'Attendance marked successfully!',
-        points: 10
-      });
-      setScanning(false);
-    }, 2000);
+
+    // Start camera and initialize BarcodeDetector when available
+    const start = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          await videoRef.current.play();
+        }
+
+        // Prefer native BarcodeDetector when available
+        if (window.BarcodeDetector) {
+          try {
+            const formats = await BarcodeDetector.getSupportedFormats();
+            if (formats.includes('qr_code')) {
+              detectorRef.current = new BarcodeDetector({ formats: ['qr_code'] });
+            }
+          } catch (e) {
+            // ignore
+          }
+        }
+
+        // Poll for detections
+        scanIntervalRef.current = setInterval(async () => {
+          try {
+            if (detectorRef.current && videoRef.current) {
+              const detections = await detectorRef.current.detect(videoRef.current);
+              if (detections && detections.length > 0) {
+                handleDetected(detections[0].rawValue);
+              }
+            } else if (videoRef.current && canvasRef.current) {
+              // Fallback: draw frame to canvas and try detector if available
+              const ctx = canvasRef.current.getContext('2d');
+              canvasRef.current.width = videoRef.current.videoWidth;
+              canvasRef.current.height = videoRef.current.videoHeight;
+              ctx.drawImage(videoRef.current, 0, 0);
+              // If BarcodeDetector exists but wasn't initialized earlier, try detect on canvas
+              if (window.BarcodeDetector) {
+                try {
+                  const imgBitmap = await createImageBitmap(canvasRef.current);
+                  const det = new BarcodeDetector({ formats: ['qr_code'] });
+                  const results = await det.detect(imgBitmap);
+                  if (results && results.length > 0) handleDetected(results[0].rawValue);
+                } catch (e) {
+                  // no-op
+                }
+              }
+            }
+          } catch (err) {
+            // ignore transient errors
+          }
+        }, 500);
+      } catch (err) {
+        setScanResult({ success: false, message: 'Camera access denied or not available' });
+        setScanning(false);
+      }
+    };
+
+    start();
+  };
+
+  const stopScanning = () => {
+    setScanning(false);
+    if (scanIntervalRef.current) {
+      clearInterval(scanIntervalRef.current);
+      scanIntervalRef.current = null;
+    }
+    if (videoRef.current && videoRef.current.srcObject) {
+      const tracks = videoRef.current.srcObject.getTracks();
+      tracks.forEach(t => t.stop());
+      videoRef.current.srcObject = null;
+    }
+    detectorRef.current = null;
+  };
+
+  const handleDetected = (rawValue) => {
+    const validation = validateQRCode(rawValue);
+    if (!validation.valid) {
+      setScanResult({ success: false, message: validation.reason || 'Invalid QR code' });
+      stopScanning();
+      return;
+    }
+
+    const { data } = validation;
+    markAttendance(user?.id || 'anon', data.eventId, data.clubId);
+    setScanResult({ success: true, message: 'Attendance marked successfully!', points: 10 });
+    stopScanning();
   };
 
   return (
@@ -77,15 +151,21 @@ const QRAttendance = () => {
                 <div className="scan-icon">📷</div>
                 <p>Position QR code within the frame</p>
                 <button onClick={handleScanQR} className="scan-btn">
-                  Start Scanning
+                  Start Camera
                 </button>
               </div>
             )}
 
             {scanning && (
-              <div className="scanning-animation">
-                <div className="scanner-line"></div>
-                <p>Scanning...</p>
+              <div className="camera-frame">
+                <video ref={videoRef} className="video-feed" playsInline muted />
+                <canvas ref={canvasRef} style={{ display: 'none' }} />
+                <div className="scanner-overlay">
+                  <div className="scanner-line"></div>
+                </div>
+                <div style={{ marginTop: 12 }}>
+                  <button onClick={stopScanning} className="scan-btn">Stop</button>
+                </div>
               </div>
             )}
 

@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
+import NavigationChatbot from './components/NavigationChatbot';
+import AccessibilityChatbot from './components/AccessibilityChatbot';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -41,9 +43,17 @@ function App() {
   // Register service worker for PWA
   useEffect(() => {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
-        .then(registration => console.log('SW registered:', registration))
-        .catch(error => console.log('SW registration failed:', error));
+      // Unregister any existing service workers first (avoid cached white-screen bundles during dev)
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(r => r.unregister());
+      }).catch(() => {});
+
+      // Only register service worker in production
+      if (import.meta.env && import.meta.env.PROD) {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => console.log('SW registered:', registration))
+          .catch(error => console.log('SW registration failed:', error));
+      }
     }
   }, []);
 
@@ -93,6 +103,8 @@ function AppContent() {
       <div className="main-content">
         <Outlet />
       </div>
+      <NavigationChatbot />
+      <AccessibilityChatbot />
       <Navbar />
     </div>
   );

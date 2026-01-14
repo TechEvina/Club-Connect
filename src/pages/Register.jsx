@@ -3,7 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import ProgressStepper from '../components/ProgressStepper.jsx';
 import { schools, languages, userRoles, notificationTypes } from '../data/onboardingData.js';
+import { geocodeZip, findSchoolsByBBox } from '../services/schoolLookup.js';
 import './Register.css';
+import { useLanguage } from '../context/LanguageContext.jsx';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -16,9 +18,14 @@ const Register = () => {
   
   // Step 1: School Selection
   const [selectedSchool, setSelectedSchool] = useState(null);
+  const [selectedSchoolKey, setSelectedSchoolKey] = useState(null);
   const [customSchool, setCustomSchool] = useState('');
   const [schoolSearch, setSchoolSearch] = useState('');
   const [showCustomSchool, setShowCustomSchool] = useState(false);
+  const [zipQuery, setZipQuery] = useState('');
+  const [zipResults, setZipResults] = useState([]);
+  const [zipLoading, setZipLoading] = useState(false);
+  const [zipError, setZipError] = useState('');
   
   // Step 2: Account Creation
   const [name, setName] = useState('');
@@ -37,6 +44,7 @@ const Register = () => {
   
   // Step 3: Language Preference
   const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const { setLanguage } = useLanguage();
   
   // Step 4: Role & Clubs
   const [selectedRole, setSelectedRole] = useState('student');
@@ -60,6 +68,11 @@ const Register = () => {
     school.name.toLowerCase().includes(schoolSearch.toLowerCase()) ||
     school.location.toLowerCase().includes(schoolSearch.toLowerCase())
   );
+
+  // Displayed list prefers zipResults when present
+  const displayedSchools = zipResults.length > 0 ? zipResults : filteredSchools;
+
+  const schoolKey = (s) => `${(s?.name||'').toString().toLowerCase().trim()}|${(s?.location||'').toString().toLowerCase().trim()}`;
   
   // Mock clubs data (replace with actual data from Firebase)
   const availableClubs = [
@@ -182,6 +195,50 @@ const Register = () => {
                   marginBottom: '16px'
                 }}
               />
+              <div style={{ display: 'flex', gap: '8px', marginTop: '12px', marginBottom: '12px' }}>
+                <input
+                  type="text"
+                  placeholder="Enter ZIP or city"
+                  value={zipQuery}
+                  onChange={(e) => setZipQuery(e.target.value)}
+                  style={{ flex: 1, padding: '10px 12px', borderRadius: '8px', border: '1px solid var(--border-color)' }}
+                />
+                <button type="button" onClick={async () => {
+                  setZipError('');
+                  setZipResults([]);
+                  if (!zipQuery.trim()) { setZipError('Enter ZIP or city'); return; }
+                  setZipLoading(true);
+                  try {
+                    const geo = await geocodeZip(zipQuery.trim());
+                    if (!geo) { setZipError('Location not found'); setZipLoading(false); return; }
+                    const schoolsFound = await findSchoolsByBBox(geo.bbox) || [];
+
+                    // Merge Overpass results with local `schools`, deduplicate by name+location
+                    const mergedMap = new Map();
+                    const normKey = (s) => `${(s.name||'').toLowerCase().trim()}|${(s.location||'').toLowerCase().trim()}`;
+
+                    // Add remote results first
+                    for (const s of schoolsFound) {
+                      const key = normKey(s);
+                      mergedMap.set(key, s);
+                    }
+
+                    // Add local schools if they don't already exist
+                    for (const s of schools) {
+                      const key = normKey(s);
+                      if (!mergedMap.has(key)) mergedMap.set(key, s);
+                    }
+
+                    const mergedList = Array.from(mergedMap.values());
+                    if (mergedList.length === 0) setZipError('No schools found for that area');
+                    setZipResults(mergedList);
+                  } catch (err) {
+                    setZipError('Lookup failed — try again later');
+                  } finally { setZipLoading(false); }
+                }} style={{ padding: '10px 14px', borderRadius: '8px' }}>Find by ZIP</button>
+              </div>
+              {zipLoading && <div style={{ marginBottom: '12px' }}>Searching for schools…</div>}
+              {zipError && <div style={{ color: 'var(--accent-red)', marginBottom: '12px' }}>{zipError}</div>}
               
               <div style={{ 
                 maxHeight: '280px', 
@@ -190,24 +247,29 @@ const Register = () => {
                 border: '1px solid var(--bg-secondary)',
                 borderRadius: '8px'
               }}>
-                {filteredSchools.map(school => (
-                  <div
+                {displayedSchools.map(school => (
+                  <button
                     key={school.id}
+                    type="button"
                     onClick={() => {
                       setSelectedSchool(school);
+                      setSelectedSchoolKey(schoolKey(school));
+                      // store preview so layout (sidebar) can reflect selection before account creation
+                      try { localStorage.setItem('clubconnect_preview_school', school.name); } catch (e) {}
                       setShowCustomSchool(false);
                       setCustomSchool('');
                     }}
+                      aria-pressed={selectedSchoolKey ? selectedSchoolKey === schoolKey(school) : false}
+                      className={`school-option ${selectedSchoolKey && selectedSchoolKey === schoolKey(school) ? 'selected' : ''}`}
                     style={{
+                      width: '100%',
+                      textAlign: 'left',
                       padding: '16px',
-                      backgroundColor: selectedSchool?.id === school.id ? 'var(--bg-secondary)' : 'transparent',
+                      border: 'none',
                       borderBottom: '1px solid var(--bg-secondary)',
                       cursor: 'pointer',
                       transition: 'background-color 0.2s'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-secondary)'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 
-                      selectedSchool?.id === school.id ? 'var(--bg-secondary)' : 'transparent'}
                   >
                     <div style={{ color: 'var(--text-primary)', fontWeight: '500', marginBottom: '4px' }}>
                       {school.name}
@@ -215,7 +277,7 @@ const Register = () => {
                     <div style={{ color: 'var(--text-tertiary)', fontSize: '12px' }}>
                       {school.location}
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
               
@@ -242,8 +304,11 @@ const Register = () => {
                   placeholder="Enter your school name..."
                   value={customSchool}
                   onChange={(e) => {
-                    setCustomSchool(e.target.value);
+                    const v = e.target.value;
+                    setCustomSchool(v);
                     setSelectedSchool(null);
+                    setSelectedSchoolKey(v ? `${v.toString().toLowerCase().trim()}|` : null);
+                    try { localStorage.setItem('clubconnect_preview_school', v || ''); } catch (e) {}
                   }}
                   style={{
                     width: '100%',
@@ -256,6 +321,10 @@ const Register = () => {
                   }}
                 />
               )}
+
+              <div style={{ marginTop: 12, fontSize: 14, color: 'var(--text-tertiary)' }}>
+                <strong>Selected:</strong> {selectedSchool?.name || customSchool || (selectedSchoolKey ? selectedSchoolKey.split('|')[0] : 'None')}
+              </div>
             </div>
           )}
           
@@ -418,7 +487,7 @@ const Register = () => {
                 {languages.map(lang => (
                   <div
                     key={lang.code}
-                    onClick={() => setSelectedLanguage(lang.code)}
+                    onClick={() => { setSelectedLanguage(lang.code); try { setLanguage(lang.code); } catch(e){} }}
                     style={{
                       padding: '16px',
                       backgroundColor: selectedLanguage === lang.code ? 'var(--bg-secondary)' : 'transparent',

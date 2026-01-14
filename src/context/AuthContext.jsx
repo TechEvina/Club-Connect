@@ -72,12 +72,14 @@ export const AuthProvider = ({ children }) => {
     const { password: _, ...userData } = userWithPassword;
     setUser(userData);
     localStorage.setItem('clubconnect_user', JSON.stringify(userData));
+    try { localStorage.removeItem('clubconnect_preview_school'); } catch (e) {}
     return userData;
   };
 
   const logout = async () => {
     setUser(null);
     localStorage.removeItem('clubconnect_user');
+    try { localStorage.removeItem('clubconnect_preview_school'); } catch (e) {}
   };
 
   const value = {

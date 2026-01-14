@@ -168,6 +168,21 @@ input[type="search"]:focus {
     min-height: 44px;
     min-width: 44px;
   }
+
+/* School option styles */
+.school-option {
+  background: transparent;
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+.school-option:hover {
+  background: var(--bg-secondary);
+}
+.school-option.selected,
+.school-option[aria-pressed="true"] {
+  background: var(--bg-secondary);
+}
   
   /* Remove hover states on touch devices */
   *:hover {

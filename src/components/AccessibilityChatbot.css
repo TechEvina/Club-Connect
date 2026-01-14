@@ -1,0 +1,8 @@
+.a11y-chatbot{position:fixed;right:20px;bottom:96px;z-index:1000}
+.a11y-toggle{width:48px;height:48px;border-radius:50%;background:#111;color:white;border:none;font-size:20px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.18)}
+.a11y-panel{width:300px;background:var(--bg-primary);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.2);overflow:hidden}
+.a11y-header{padding:12px 16px;background:var(--accent-primary);color:white;font-weight:600}
+.a11y-body{padding:12px}
+.a11y-option{display:flex;align-items:center;gap:8px;padding:8px 0}
+.a11y-footer{padding:12px;border-top:1px solid var(--border-color);display:flex;justify-content:flex-end}
+.a11y-reset{background:transparent;border:1px solid var(--border-color);padding:8px 12px;border-radius:8px;cursor:pointer}

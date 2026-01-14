@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const Sidebar = () => {
   const location = useLocation();
@@ -18,6 +19,11 @@ const Sidebar = () => {
     { path: '/app/settings', icon: '⚙️', label: 'Settings' },
   ];
   
+  const { user } = useAuth();
+
+  // Allow a preview school to be shown while registering (written to localStorage by Register.jsx)
+  const previewSchool = (typeof window !== 'undefined' && localStorage.getItem('clubconnect_preview_school')) || null;
+
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
@@ -42,10 +48,10 @@ const Sidebar = () => {
       
       <div className="sidebar-footer">
         <div className="sidebar-profile">
-          <div className="sidebar-avatar">E</div>
+          <div className="sidebar-avatar">{(user?.name||'U').charAt(0).toUpperCase()}</div>
           <div className="sidebar-profile-info">
-            <div className="sidebar-profile-name">Evina</div>
-            <div className="sidebar-profile-school">Central High</div>
+            <div className="sidebar-profile-name">{user?.name || 'Evina'}</div>
+            <div className="sidebar-profile-school">{user?.school || previewSchool || 'Central High'}</div>
           </div>
         </div>
         <div style={{ marginTop: '12px', textAlign: 'center' }}>

@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import './Home.css';
+import { schools, languages } from '../data/onboardingData.js';
+import { useLanguage } from '../context/LanguageContext.jsx';
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('profile');
+  const [selectedSchool, setSelectedSchool] = useState('Central High School');
 
   const tabs = ['profile', 'school', 'language', 'notifications', 'privacy', 'accessibility'];
 
@@ -71,15 +74,21 @@ const Settings = () => {
             <div style={{ marginTop: '20px' }}>
               <div style={{ marginBottom: '20px' }}>
                 <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>School Name</label>
-                <input type="text" defaultValue="Central High School" disabled style={{
-                  width: '100%',
-                  padding: '10px 16px',
-                  background: 'var(--bg-tertiary)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '8px',
-                  color: 'var(--text-secondary)',
-                  fontSize: '14px'
-                }} />
+                  {/* Allow selecting school from the known list */}
+                  <select value={selectedSchool || ''} onChange={(e) => setSelectedSchool(e.target.value)} style={{
+                    width: '100%',
+                    padding: '10px 16px',
+                    background: 'var(--bg-tertiary)',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: '8px',
+                    color: 'var(--text-primary)',
+                    fontSize: '14px'
+                  }}>
+                    <option value="">-- Select your school --</option>
+                    {schools.map(s => (
+                      <option key={s.id} value={s.name}>{s.name} — {s.location}</option>
+                    ))}
+                  </select>
               </div>
               <div style={{ marginBottom: '20px' }}>
                 <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Grade</label>
@@ -110,26 +119,7 @@ const Settings = () => {
             <p style={{ color: 'var(--text-secondary)', marginTop: '8px', marginBottom: '20px' }}>
               Choose your preferred language. Changes apply instantly.
             </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
-              {['English 🇺🇸', 'Spanish 🇪🇸', 'French 🇫🇷', 'German 🇩🇪', 'Chinese 🇨🇳', 'Japanese 🇯🇵'].map((lang) => (
-                <div key={lang} style={{
-                  padding: '16px',
-                  background: lang.includes('English') ? 'rgba(59, 130, 246, 0.15)' : 'var(--bg-tertiary)',
-                  border: lang.includes('English') ? '2px solid var(--accent-primary)' : '1px solid var(--border-color)',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  textAlign: 'center',
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  transition: 'all var(--transition-base)'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                >
-                  {lang}
-                </div>
-              ))}
-            </div>
+            <LanguageSelector />
           </div>
         );
       

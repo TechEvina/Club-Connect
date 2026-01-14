@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import Spline from '@splinetool/react-spline';
 import './Landing.css';
 
 const Landing = () => {
@@ -29,9 +28,54 @@ const Landing = () => {
     }
   ];
 
+  const tourCloseRef = useRef(null);
+  const [showTour, setShowTour] = useState(false);
+
+  // Modal focus-trap and Esc-to-close
+  useEffect(() => {
+    function onKey(e) {
+      if (e.key === 'Escape') setShowTour(false);
+    }
+    if (!showTour) return;
+
+    const modal = document.querySelector('.modal');
+    const focusableSelector = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+    const focusable = modal ? Array.from(modal.querySelectorAll(focusableSelector)) : [];
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    function trapTab(e) {
+      if (e.key !== 'Tab') return;
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('keydown', trapTab);
+    // autofocus first focusable
+    setTimeout(() => { if (first) first.focus(); }, 0);
+
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('keydown', trapTab);
+    };
+  }, [showTour]);
+
+  
+
   return (
-    <div>
-      <header className="landing-navbar">
+    <>
+      <a className="skip-link" href="#main">Skip to content</a>
+      <header className="landing-navbar" role="banner">
         <div className="container">
           <div className="logo">🏫 Club-Connect</div>
           <nav>
@@ -46,24 +90,38 @@ const Landing = () => {
       </header>
 
       <section className="hero">
-        <div className="container" style={{ display: 'flex', alignItems: 'center', gap: '60px' }}>
-          <div className="hero-content" style={{ flex: 1 }}>
+        <div className="container hero-inner">
+          <div className="hero-content">
             <h1>The future of student clubs happens together</h1>
-            <p>Tools and trends evolve, but student connection endures. With ClubConnect, students, clubs, and opportunities come together on one platform.</p>
+            <p>Student connection endures. Club-Connect brings students, clubs, and opportunities together in one simple platform.</p>
             <div className="hero-actions">
               <Link to="/app/register" className="btn primary">Sign up for ClubConnect</Link>
               <Link to="/app/login" className="btn outline">Sign in</Link>
+              <button className="btn outline" onClick={() => setShowTour(true)} aria-haspopup="dialog">Take a quick tour</button>
             </div>
           </div>
-          <div style={{ flex: 1, height: '500px', minWidth: '400px' }}>
-            <Spline scene="https://prod.spline.design/Ty6CtMGHCy6f4dm3/scene.splinecode" />
+          <div className="hero-visual" aria-hidden="false">
+            <svg width="100%" height="100%" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="illustrationTitle illustrationDesc">
+              <title id="illustrationTitle">Club-Connect illustration</title>
+              <desc id="illustrationDesc">Stylized illustration of students collaborating around clubs and events.</desc>
+              <rect x="0" y="0" width="100%" height="100%" fill="#F5F7FB"/>
+              <g transform="translate(40,40)">
+                <circle cx="80" cy="80" r="48" fill="#7ED957" opacity="0.15" />
+                <rect x="150" y="40" width="220" height="120" rx="12" fill="#fff" stroke="#E6EEF8" />
+                <circle cx="210" cy="100" r="28" fill="#6EB5FF" opacity="0.18" />
+                <rect x="200" y="220" width="280" height="120" rx="12" fill="#fff" stroke="#E6EEF8" />
+                <text x="170" y="110" fontSize="18" fill="#0b1220">Discover clubs</text>
+                <text x="210" y="260" fontSize="18" fill="#0b1220">Events & RSVP</text>
+              </g>
+            </svg>
           </div>
         </div>
       </section>
 
-      <section id="features" className="section features">
+      <main id="main">
+      <section id="features" className="section features" aria-labelledby="features-heading">
         <div className="container">
-          <h2>Accelerate your student experience</h2>
+          <h2 id="features-heading">Accelerate your student experience</h2>
           <p>From joining your first club to leading events, Club-Connect provides tools to help you get involved and stay connected.</p>
           <div className="features-grid">
             <div className="feature-card">
@@ -124,20 +182,23 @@ const Landing = () => {
         </div>
       </section>
 
-      <section className="section faq">
+      <section className="section faq" aria-labelledby="faq-heading">
         <div className="container">
-          <h2>Frequently asked questions</h2>
+          <h2 id="faq-heading">Frequently asked questions</h2>
           <div className="faq-accordion">
             {faqs.map((faq, index) => (
               <div key={index} className="faq-item">
                 <button
+                  id={`faq-${index}-btn`}
                   className={`faq-question ${openFaq === index ? 'active' : ''}`}
                   onClick={() => toggleFaq(index)}
+                  aria-expanded={openFaq === index}
+                  aria-controls={`faq-${index}-panel`}
                 >
                   <span>{faq.question}</span>
                   <span className="faq-icon">{openFaq === index ? '−' : '+'}</span>
                 </button>
-                <div className={`faq-answer ${openFaq === index ? 'open' : ''}`}>
+                <div id={`faq-${index}-panel`} className={`faq-answer ${openFaq === index ? 'open' : ''}`} role="region" aria-labelledby={`faq-${index}-btn`}>
                   <p>{faq.answer}</p>
                 </div>
               </div>
@@ -166,7 +227,31 @@ const Landing = () => {
           <p>&copy; 2025 Club-Connect</p>
         </div>
       </footer>
-    </div>
+      </main>
+
+      {showTour && (
+        <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Product tour" ref={tourCloseRef}>
+          <div className="modal">
+            <button className="modal-close" aria-label="Close tour" onClick={() => setShowTour(false)}>×</button>
+            <div className="modal-content">
+              <h3>Quick tour</h3>
+              <div className="tour-slide">
+                <h4>Discover clubs</h4>
+                <p>Search, filter, and join clubs in seconds.</p>
+              </div>
+              <div className="tour-slide">
+                <h4>Manage events</h4>
+                <p>Track events, RSVP, and get reminders.</p>
+              </div>
+              <div className="tour-slide">
+                <h4>Track participation</h4>
+                <p>Earn badges and view your activity history.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
