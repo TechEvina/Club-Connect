@@ -8,7 +8,9 @@ const Navbar = () => {
   // Helper to scroll or navigate and scroll
   const handleNavScroll = (sectionId) => (e) => {
     e.preventDefault();
-    if (location.pathname === '/' || location.pathname === '/landing') {
+    // Support HashRouter and GitHub Pages base path
+    const hashLanding = location.pathname === '/' || location.pathname === '/landing' || location.hash === '#/' || location.hash === '#/landing' || window.location.pathname.endsWith('/Club-Connect/') || window.location.hash === '#/';
+    if (hashLanding) {
       setTimeout(() => {
         document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
       }, 0);

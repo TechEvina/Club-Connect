@@ -121,7 +121,7 @@ const Landing = () => {
       <section className="hero">
         <div className="container hero-inner">
           <div className="hero-content">
-            <h1>The future of student clubs happens together</h1>
+            <h1>The future of student clubs happens <em>together</em></h1>
             <p>Student connection endures. Club-Connect brings students, clubs, and opportunities together in one simple platform.</p>
             <div className="hero-actions">
               <Link to="/app/register" className="btn primary">Sign up for ClubConnect</Link>
