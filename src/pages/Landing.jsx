@@ -1,16 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import './Landing.css';
 
 const Landing = () => {
-      const [navOpen, setNavOpen] = useState(false);
-    // Enable smooth scrolling for anchor links
-    useEffect(() => {
-      document.documentElement.style.scrollBehavior = 'smooth';
-      return () => {
-        document.documentElement.style.scrollBehavior = '';
-      };
-    }, []);
+  const [navOpen, setNavOpen] = useState(false);
+  const location = useLocation();
+  // Enable smooth scrolling for anchor links
+  useEffect(() => {
+    document.documentElement.style.scrollBehavior = 'smooth';
+    return () => {
+      document.documentElement.style.scrollBehavior = '';
+    };
+  }, []);
+  // Scroll to section if location.state.scrollTo is set
+  useEffect(() => {
+    if (location.state && location.state.scrollTo) {
+      setTimeout(() => {
+        document.getElementById(location.state.scrollTo)?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }, [location.state]);
   const [openFaq, setOpenFaq] = useState(null);
 
   const toggleFaq = (index) => {
