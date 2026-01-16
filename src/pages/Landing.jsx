@@ -93,85 +93,53 @@ const Landing = () => {
     <>
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="landing-navbar" role="banner">
-        <div className="container" style={{position: 'relative'}}>
-          <div className="logo">🏫 Club-Connect</div>
-          {/* Hamburger icon for mobile */}
-          <button className="hamburger" aria-label="Open navigation" onClick={() => setNavOpen(true)}>
-            <span className="bar"></span>
-            <span className="bar"></span>
-            <span className="bar"></span>
-          </button>
-          {/* Side drawer nav */}
-          <nav className={`mobile-nav${navOpen ? ' open' : ''}`}> 
-            <button className="close-nav" aria-label="Close navigation" onClick={() => setNavOpen(false)}>&times;</button>
-            <ul>
-              <li>
-                <a href="#features" onClick={e => {e.preventDefault(); setNavOpen(false); document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });}}>Features</a>
-              </li>
-              <li>
-                <a href="#testimonials" onClick={e => {e.preventDefault(); setNavOpen(false); document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' });}}>Testimonials</a>
-              </li>
-              <li><Link to="/app/login" onClick={()=>setNavOpen(false)}>Sign in</Link></li>
-              <li><Link to="/app/register" className="btn" onClick={()=>setNavOpen(false)}>Sign up</Link></li>
-            </ul>
-          </nav>
+        <div className="container" style={{position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '56px'}}>
+          <div className="logo" style={{fontSize: '1.3rem', fontWeight: 700}}>🏫 Club-Connect</div>
         </div>
       </header>
 
-      <section className="hero">
-        <div className="container hero-inner">
-          <div className="hero-content">
-            <h1>The future of student clubs happens <em>together</em></h1>
-            <p>Student connection endures. Club-Connect brings students, clubs, and opportunities together in one simple platform.</p>
-            <div className="hero-actions">
-              <Link to="/app/register" className="btn primary">Sign up for ClubConnect</Link>
-              <Link to="/app/login" className="btn outline">Sign in</Link>
-              <button className="btn outline" onClick={() => setShowTour(true)} aria-haspopup="dialog">Take a quick tour</button>
+      <section className="hero" style={{paddingTop: '1.5rem', paddingBottom: '0.5rem'}}>
+        <div className="container hero-inner" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem'}}>
+          <div className="hero-content" style={{width: '100%', maxWidth: 420, textAlign: 'center'}}>
+            <h2 style={{fontSize: '1.3rem', fontWeight: 600, margin: '0 0 0.5rem 0', color: '#222'}}>The future of student clubs happens <em>together</em></h2>
+            <p style={{fontSize: '1rem', color: '#444', margin: '0 0 1rem 0'}}>Student connection endures. Club-Connect brings students, clubs, and opportunities together in one simple platform.</p>
+            <Link to="/app/register" className="btn primary" style={{width: '100%', fontSize: '1.1rem', marginBottom: 8}}>Sign up for ClubConnect</Link>
+            <div style={{margin: '0.5rem 0 0.5rem 0'}}>
+              <span style={{fontSize: '0.98rem', color: '#666'}}>Already have an account? </span>
+              <Link to="/app/login" style={{fontSize: '0.98rem', color: '#6EB5FF', textDecoration: 'underline'}}>Sign in</Link>
+            </div>
+            <div style={{marginBottom: 8}}>
+              <button className="btn-link" style={{background: 'none', border: 'none', color: '#7ED957', fontSize: '0.98rem', textDecoration: 'underline', cursor: 'pointer', padding: 0}} onClick={() => setShowTour(true)} aria-haspopup="dialog">Take a quick tour</button>
             </div>
           </div>
-          <div className="hero-visual" aria-hidden="false">
-            <svg width="100%" height="100%" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="illustrationTitle illustrationDesc">
-              <title id="illustrationTitle">Club-Connect illustration</title>
-              <desc id="illustrationDesc">Stylized illustration of students collaborating around clubs and events.</desc>
-              <rect x="0" y="0" width="100%" height="100%" fill="#F5F7FB"/>
-              <g transform="translate(40,40)">
-                <circle cx="80" cy="80" r="48" fill="#7ED957" opacity="0.15" />
-                <rect x="150" y="40" width="220" height="120" rx="12" fill="#fff" stroke="#E6EEF8" />
-                <circle cx="210" cy="100" r="28" fill="#6EB5FF" opacity="0.18" />
-                <rect x="200" y="220" width="280" height="120" rx="12" fill="#fff" stroke="#E6EEF8" />
-                <text x="170" y="110" fontSize="18" fill="#0b1220">Discover clubs</text>
-                <text x="210" y="260" fontSize="18" fill="#0b1220">Events & RSVP</text>
-              </g>
-            </svg>
+          {/* App-style preview: Upcoming events */}
+          <div className="app-preview" style={{width: '100%', maxWidth: 420, background: '#fff', borderRadius: 14, boxShadow: '0 2px 12px rgba(110,181,255,0.08)', margin: '0.5rem 0 0 0', padding: '1rem 1.2rem'}}>
+            <div style={{display: 'flex', alignItems: 'center', marginBottom: 8}}>
+              <span style={{fontSize: '1.1rem', fontWeight: 600, color: '#6EB5FF', marginRight: 8}}>Upcoming events</span>
+              <span style={{fontSize: '1.2rem'}}>📅</span>
+            </div>
+            <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
+              <li style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #F0F4F8'}}>
+                <span style={{fontWeight: 500}}>Art Club Meeting</span>
+                <span style={{fontSize: '0.95rem', color: '#888'}}>Today 3:30pm</span>
+              </li>
+              <li style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0'}}>
+                <span style={{fontWeight: 500}}>Robotics Kickoff</span>
+                <span style={{fontSize: '0.95rem', color: '#888'}}>Tomorrow 4:00pm</span>
+              </li>
+            </ul>
           </div>
         </div>
       </section>
 
       <main id="main">
-      <section id="features" className="section features" aria-labelledby="features-heading">
-        <div className="container">
-          <h2 id="features-heading">Accelerate your student experience</h2>
-          <p>From joining your first club to leading events, Club-Connect provides tools to help you get involved and stay connected.</p>
-          <div className="features-grid">
-            <div className="feature-card">
-              <h3>🧑‍🤝‍🧑 Discover & Join Clubs</h3>
-              <p>Browse all available clubs with detailed descriptions, meeting times, and leadership info. Join instantly and get access to exclusive content.</p>
-              <Link to="/app/clubs" className="feature-link">Explore clubs →</Link>
-            </div>
-            <div className="feature-card">
-              <h3>📅 Track Events & Meetings</h3>
-              <p>Never miss a meeting again. View upcoming events, set reminders, and mark attendance directly from your dashboard.</p>
-              <Link to="/app" className="feature-link">View events →</Link>
-            </div>
-            <div className="feature-card">
-              <h3>📊 Monitor Participation</h3>
-              <p>Track your involvement across clubs. See attendance history, earned badges, and participation stats in one place.</p>
-              <Link to="/app/profile" className="feature-link">View profile →</Link>
-            </div>
-            <div className="feature-card">
-              <h3>📢 Stay Updated</h3>
-              <p>Receive real-time announcements from club leaders. No more missed messages or scattered information.</p>
-              <Link to="/app/notifications" className="feature-link">Check notifications →</Link>
+      <section id="features" className="section features" aria-labelledby="features-heading" style={{paddingTop: '1.2rem'}}>
+        <div className="container" style={{maxWidth: 420, margin: '0 auto'}}>
+          <div className="feature-card app-feature-card" style={{display: 'flex', alignItems: 'center', gap: 12, padding: '0.8rem 1rem', borderRadius: 12, boxShadow: '0 1px 6px rgba(110,181,255,0.07)', marginBottom: 12, cursor: 'pointer', border: '1.5px solid #F0F4F8'}}>
+            <span style={{fontSize: '1.5rem', marginRight: 8}}>🧑‍🤝‍🧑</span>
+            <div style={{flex: 1}}>
+              <div style={{fontWeight: 600, fontSize: '1.08rem'}}>Discover & Join Clubs <span style={{fontSize: '1.1rem', color: '#6EB5FF'}}>→</span></div>
+              <div style={{fontSize: '0.97rem', color: '#666', marginTop: 2}}>Browse all clubs, join instantly, and get access to exclusive content.</div>
             </div>
           </div>
         </div>
