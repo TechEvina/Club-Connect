@@ -145,27 +145,7 @@ const Landing = () => {
         </div>
       </section>
 
-      <section id="testimonials" className="section testimonials">
-        <div className="container">
-          <h2>Trusted by students and schools nationwide</h2>
-          <div className="testimonials-grid">
-            <div className="testimonial-card">
-              <p>"Club-Connect made it so easy to find and join clubs. I discovered my passion for art and became club president!"</p>
-              <p><strong>Sarah Johnson</strong><br/>Art Club President, University of Example</p>
-            </div>
-            <div className="testimonial-card">
-              <p>"The event tracking saved me hours. I never miss meetings anymore and my grades improved from better time management."</p>
-              <p><strong>Mike Chen</strong><br/>Sports Enthusiast, State College</p>
-            </div>
-            <div className="testimonial-card">
-              <p>"As a club leader, managing announcements and tracking attendance is now effortless. Highly recommend!"</p>
-              <p><strong>Emily Rodriguez</strong><br/>Tech Club Leader, Tech University</p>
-            </div>
-          </div>
-          <div className="stats">
-            <div className="stat">
-              <h3>50+</h3>
-              <p>Schools using Club-Connect</p>
+      {/* Remove testimonials section from mobile landing/auth screen for app-like experience */}
             </div>
             <div className="stat">
               <h3>1000+</h3>
